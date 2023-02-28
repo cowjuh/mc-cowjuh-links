@@ -1,1 +1,2 @@
+// Run this command to render the mp4
 ffmpeg -framerate 60 -i 'output/project/%06d.png' -c:v libx264 -pix_fmt yuv420p output/output.mp4
