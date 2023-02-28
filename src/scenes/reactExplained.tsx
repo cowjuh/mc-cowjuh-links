@@ -1,8 +1,8 @@
 import { makeScene2D } from "@motion-canvas/2d/lib/scenes";
-import { Circle, Layout, Node, Rect, Txt } from "@motion-canvas/2d/lib/components";
-import { createRef, makeRef } from "@motion-canvas/core/lib/utils";
-import { all, delay, waitFor } from "@motion-canvas/core/lib/flow";
-import { OFFSET } from "utils/constants";
+import { Circle, Rect, Txt } from "@motion-canvas/2d/lib/components";
+import { makeRef } from "@motion-canvas/core/lib/utils";
+import { all, waitFor } from "@motion-canvas/core/lib/flow";
+import { OFFSET } from "../utils/constants";
 
 const row1 = [
   "The Science of Sleep: How to Get Better Rest",
