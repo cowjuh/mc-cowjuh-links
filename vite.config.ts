@@ -5,7 +5,7 @@ import path from "path";
 export default defineConfig({
   plugins: [
     motionCanvas({
-      project: ["./src/project/project1.ts", "./src/project/project2.ts"],
+      project: ["./src/project/reactExplained.ts", "./src/project/chatgpt.ts"],
     }),
   ],
   resolve: {
