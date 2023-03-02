@@ -1,2 +1,26 @@
-// Run this command to render the mp4
-ffmpeg -framerate 60 -i 'output/project/%06d.png' -c:v libx264 -pix_fmt yuv420p output/output.mp4
+ffmpeg -framerate 60 -i 'output/reactExplained/%06d.png' -c:v libx264 -pix_fmt yuv420p output/output.mp4
+
+ffmpeg -framerate 60 -i 'output/reactExplained/%06d.png' -r 60  -pix_fmt yuva420p output/video.webm
+
+
+// NOT WORKING
+
+
+ffmpeg -i 'output/reactExplained/%06d.png' -vcodec png -pix_fmt yuva420 output/video.mov
+
+ffmpeg -i output/reactExplained/%06d.png -vcodec png output/video.mov
+
+ffmpeg -framerate 60 -i output/reactExplained/%06d.png -vcodec qtrle movie_with_alpha.mov
+
+ffmpeg -i output/reactExplained/%06d.png -vcodec png movie_with_alpha.mov
+
+ffmpeg -framerate 60 -i output/reactExplained/%06d.png -vcodec qtrle output/testmov.mov
+
+
+// TRYING
+
+ffmpeg -framerate 60 -i 'output/reactExplained/%06d.png' -c:v prores_ks -profile:v 5  -bits_per_mb 8000 -pix_fmt yuva444p10le output/output1.mov
+
+// CONVERT TO MOV FROM webm
+
+ffmpeg -i output/video.webm -map 0:v:0 -c:v prores_ks -pix_fmt yuva444p10le -profile:v 4444 -alpha_bits 8 output/output.mov
