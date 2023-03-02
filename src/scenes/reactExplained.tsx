@@ -1,8 +1,9 @@
 import { makeScene2D } from "@motion-canvas/2d/lib/scenes";
 import { Circle, Rect, Txt } from "@motion-canvas/2d/lib/components";
 import { makeRef } from "@motion-canvas/core/lib/utils";
-import { all, waitFor } from "@motion-canvas/core/lib/flow";
+import { all, waitFor, waitUntil } from "@motion-canvas/core/lib/flow";
 import { OFFSET } from "../utils/constants";
+import { SignalGenerator } from "@motion-canvas/core/lib/signals";
 
 const row1 = [
   "The Science of Sleep: How to Get Better Rest",
@@ -22,6 +23,8 @@ export default makeScene2D(function* (view) {
   const videoRefs: Rect[] = [];
   const rowRefs: Rect[] = [];
   const thumbnailRefs: Rect[] = [];
+  const timestampRefs: Rect[] = [];
+  const iconRefs: Rect[] = [];
   const textRefs: Txt[] = [];
   const NUM_COLUMNS = row1.length;
   const GAP = 75;
@@ -35,7 +38,7 @@ export default makeScene2D(function* (view) {
       {thumbnailContent.map((row, rowIndex) => {
         return (
           <Rect
-            fill={"#ffffff"}
+            fill={"#000000"}
             x={ROW_ORIGIN_X}
             y={ROW_ORIGIN_Y * rowIndex}
             offset={OFFSET.topLeft}
@@ -58,13 +61,16 @@ export default makeScene2D(function* (view) {
                   <Rect
                     layout
                     radius={10}
-                    fill={"#303030"}
+                    fill={"#171717"}
                     width={THUMBNAIL_WIDTH}
                     height={THUMBNAIL_HEIGHT}
                     padding={10}
                     justifyContent={"end"}
                     alignItems={"end"}
                     offset={OFFSET.topLeft}
+                    opacity={10}
+                    stroke={"#ffffff40"}
+                    lineWidth={6}
                     ref={makeRef(thumbnailRefs, i + rowIndex * NUM_COLUMNS)}
                   >
                     <Rect
@@ -74,6 +80,8 @@ export default makeScene2D(function* (view) {
                       paddingLeft={10}
                       paddingRight={10}
                       radius={10}
+                      opacity={0}
+                      ref={makeRef(timestampRefs, i + rowIndex * NUM_COLUMNS)}
                     >
                       <Txt fill={"#ffffff"} fontSize={30}>
                         3:00
@@ -90,11 +98,19 @@ export default makeScene2D(function* (view) {
                     textWrap
                     clip
                   >
-                    <Circle x={0} width={70} height={70} fill={"#ffffff"} />
+                    <Circle
+                      x={0}
+                      width={70}
+                      height={70}
+                      fill={"#ffffff"}
+                      lineWidth={2}
+                      opacity={0}
+                      ref={makeRef(iconRefs, i + rowIndex * NUM_COLUMNS)}
+                    />
                     <Txt
                       fill={"#ffffff"}
                       fontSize={30}
-                      fontWeight={600}
+                      opacity={0}
                       width={THUMBNAIL_WIDTH - 70 - 20}
                       textWrap={true}
                       ref={makeRef(textRefs, i + rowIndex * NUM_COLUMNS)}
@@ -111,10 +127,44 @@ export default makeScene2D(function* (view) {
     </>
   );
 
+  const fadeInTimeStamps = () => {
+    const obj: SignalGenerator<number, number>[] = [];
+    timestampRefs.forEach((timestamp) => {
+      obj.push(timestamp.opacity(100, 0.7));
+    });
+    return obj;
+  };
+
+  const fadeInIcon = () => {
+    const obj: SignalGenerator<number, number>[] = [];
+    iconRefs.forEach((icon) => {
+      obj.push(icon.opacity(100, 2));
+    });
+    return obj;
+  };
+
+  const fadeInText = () => {
+    const obj: SignalGenerator<number, number>[] = [];
+    textRefs.forEach((text) => {
+      obj.push(text.opacity(100, 1));
+    });
+    return obj;
+  };
+
   const animateThumbnails = () => {
     const obj = [];
     for (let i = 0; i < videoRefs.length; i++) {
       obj.push(videoRefs[i].position.y(0, 1));
+    }
+
+    return obj;
+  };
+
+  const clearerThumbnails = () => {
+    const obj = [];
+    for (let i = 0; i < thumbnailRefs.length; i++) {
+      obj.push(thumbnailRefs[i].fill("#303030", 2));
+      obj.push(thumbnailRefs[i].lineWidth(0, 2));
     }
 
     return obj;
@@ -134,7 +184,15 @@ export default makeScene2D(function* (view) {
     for (let i = 0; i < thumbnailRefs.length; i++) {
       obj.push(videoRefs[i].scale(1.1, 1));
       obj.push(thumbnailRefs[i].fill("#2e6fd9", 1));
-      obj.push(textRefs[i].fill("#2e6fd9", 1));
+    }
+
+    return obj;
+  };
+
+  const colorThumbnails = (fill: string) => {
+    const obj = [];
+    for (let i = 0; i < thumbnailRefs.length; i++) {
+      obj.push(thumbnailRefs[i].fill(fill, i * 0.3));
     }
 
     return obj;
@@ -142,15 +200,28 @@ export default makeScene2D(function* (view) {
 
   const scaleSingleThumbnail = () => {
     const obj = [];
-    obj.push(videoRefs[NUM_COLUMNS].scale(1.1, 1).to(1, 1));
-    obj.push(thumbnailRefs[NUM_COLUMNS].fill("#2e6fd9", 1).to("#303030", 1));
-    obj.push(textRefs[NUM_COLUMNS].fill("#2e6fd9", 1).to("#ffffff", 1));
+    obj.push(videoRefs[NUM_COLUMNS].scale(1.1, 1));
+    obj.push(thumbnailRefs[NUM_COLUMNS].fill("#2e6fd9", 1));
     return obj;
   };
-
+  yield* waitUntil("initialize");
   yield* all(...animateThumbnails());
+  yield* waitUntil("fadeInClearerVideo");
+  yield* all(...clearerThumbnails());
+  yield* waitUntil("fadeInTimestamps");
+  yield* all(...fadeInTimeStamps());
+  yield* waitUntil("fadeInText");
+  yield* all(...fadeInText());
+  yield* waitUntil("fadeInIcons");
+  yield* all(...fadeInIcon());
+  yield* waitUntil("hugeSingleThumbnail");
   yield* all(...scaleSingleThumbnail());
+  yield* waitUntil("scaleAllThumbnails");
   yield* all(...scaleThumbnails());
-  yield* waitFor(1);
+  yield* waitUntil("changeColor");
+  yield* all(...colorThumbnails("#FF8A91"));
+  yield* all(...colorThumbnails("#FFCC17"));
+  yield* waitUntil("fadeThumbnailsOut");
   yield* all(...fadeOutThumbnails());
+  yield* waitUntil("audioEnd");
 });

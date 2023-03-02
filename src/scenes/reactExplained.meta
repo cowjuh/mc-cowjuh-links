@@ -1,5 +1,46 @@
 {
   "version": 1,
-  "timeEvents": [],
+  "timeEvents": [
+    {
+      "name": "initialize",
+      "targetTime": 2.3634197513856328
+    },
+    {
+      "name": "fadeInClearerVideo",
+      "targetTime": 7.136766523504583
+    },
+    {
+      "name": "fadeInTimestamps",
+      "targetTime": 9.15
+    },
+    {
+      "name": "fadeInText",
+      "targetTime": 9.85
+    },
+    {
+      "name": "fadeInIcons",
+      "targetTime": 11.214238278769688
+    },
+    {
+      "name": "hugeSingleThumbnail",
+      "targetTime": 22.25177628662659
+    },
+    {
+      "name": "scaleAllThumbnails",
+      "targetTime": 29.261636509690298
+    },
+    {
+      "name": "changeColor",
+      "targetTime": 33.00298021632766
+    },
+    {
+      "name": "fadeThumbnailsOut",
+      "targetTime": 36.145268262152655
+    },
+    {
+      "name": "audioEnd",
+      "targetTime": 39.67972137582023
+    }
+  ],
   "seed": 3989598752
 }

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "timeEvents": [
+    {
+      "name": "cueReact",
+      "targetTime": 10.727647774456987
+    },
+    {
+      "name": "componentize",
+      "targetTime": 13.669323563481122
+    },
+    {
+      "name": "endIntro",
+      "targetTime": 17.130960704759566
+    }
+  ],
+  "seed": 3989598752
+}
